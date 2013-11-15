@@ -7,15 +7,18 @@
 //
 
 #import "ANAppDelegate.h"
+#import <Parse/Parse.h>
 
 @implementation ANAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
-    self.window.backgroundColor = [UIColor whiteColor];
-    [self.window makeKeyAndVisible];
+    
+    [Parse setApplicationId:@"CrC83Mz8UC5sOKgeqY4qquOLl3tUfzIvLBvZDeP8"
+                  clientKey:@"AqiL6pQs2Vftr5ZcuDURvVFBkgLRT1Hk3KcikUiE"];
+    
+    [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
+    
     return YES;
 }
 
