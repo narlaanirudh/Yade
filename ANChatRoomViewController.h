@@ -11,7 +11,7 @@
 
 @interface ANChatRoomViewController : UITableViewController
 
-@property (nonatomic,strong) PFRelation *privateChatRooms;
+
 
 @property (nonatomic,strong) NSArray *privateCRooms;
 

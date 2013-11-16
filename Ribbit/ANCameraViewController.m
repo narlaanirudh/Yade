@@ -21,7 +21,44 @@
 {
     [super viewDidLoad];
     
+    //Initialize Strings
+    
+    self.chatRoomName = [[NSString alloc]init];
+    
+    self.chatRoomType = [[NSString alloc]init];
+    
+    
+    
     self.recepients = [[NSMutableArray alloc] init];
+    self.type = [[NSString alloc]init];
+    
+    //Load up Global Rooms
+    
+    
+    PFQuery *query = [PFQuery queryWithClassName:@"GlobalChatRooms"];
+    [query whereKey:@"GroupParent" equalTo:@"Africa"];
+    //[query orderByDescending:@"createdAt"];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error) {
+            
+            
+            
+            self.globalRooms =objects;
+            [self.tableView reloadData];
+            
+            
+            
+        } else {
+            // Log details of the failure
+            NSLog(@"Error: %@ %@", error, [error userInfo]);
+        }
+    }];
+    
+    
+    
+
+    
+    
 
    
     
@@ -72,6 +109,29 @@
         
     }];
     
+    //Load up Private Chat Rooms
+    
+   query = [PFQuery queryWithClassName:@"PrivateChatRooms"];
+    [query whereKey:@"memberGroups" equalTo:[[PFUser currentUser] objectId]];
+    [query orderByAscending:@"createdAt"];
+    
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if(error)
+            NSLog(@"error %@  %@",error , [error userInfo]);
+        
+        else
+        {
+            self.privateCRooms = objects;
+            NSLog(@" Value of pchatrooms%@",objects);
+            [self.tableView reloadData];
+            
+        }
+        
+        
+    }];
+    
+    
+    
 }
 
 
@@ -81,13 +141,82 @@
 {
 
     // Return the number of sections.
-    return 1;
+    if([self.type isEqualToString:@"Friends"])
+    
+        return 1;
+   
+    
+    else if([self.type isEqualToString:@"Groups"])
+   
+        return 2;
+    
+    return 0;
+
 }
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    
+    if([self.type isEqualToString:@"Friends"])
+        
+        return @"Friends";
+    
+    
+    else if([self.type isEqualToString:@"Groups"])
+        
+    {
+
+switch (section) {
+    case 0:
+        return @"Private Chat Rooms";
+        break;
+        
+    case 1:
+        return @"Global Chat Rooms ";
+        
+        
+    default:
+        return nil;
+        break;
+}
+    }
+    
+    return nil;
+}
+
+
+
+
+
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return [self.friends count];
+   
+    
+  if([self.type isEqualToString:@"Friends"])
+    {
+        return self.friends.count;
+    }
+    
+    else if([self.type isEqualToString:@"Groups"])
+    {
+        switch (section) {
+            case 0:
+                return [self.privateCRooms count];
+                break;
+                
+            case 1:
+                return [self.globalRooms count];
+                
+                
+            default:
+                return 0;
+                break;
+        }
+    }
+    
+    return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -95,6 +224,8 @@
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
+    if([self.type isEqualToString:@"Friends"])
+    {
    
     PFUser *user = [self.friends objectAtIndex:indexPath.row];
     cell.textLabel.text = user.username;
@@ -106,6 +237,33 @@
     
     else
         cell.accessoryType = UITableViewCellAccessoryNone;
+    }
+    
+    else if([self.type isEqualToString:@"Groups"])
+    {
+        
+        if(indexPath.section==0)
+        {
+            
+            PFObject *user = [self.privateCRooms objectAtIndex:indexPath.row];
+            cell.textLabel.text =[user objectForKey:@"GroupName"];
+        }
+        
+        
+        if(indexPath.section==1)
+            
+            
+        {
+            
+            PFObject *room = [self.globalRooms objectAtIndex:indexPath.row];
+            cell.textLabel.text = [room objectForKey:@"GroupName"];
+            
+            
+            
+            
+        }
+        
+    }
     
     return cell;
 }
@@ -116,6 +274,9 @@
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    
+    if([self.type isEqualToString:@"Friends"])
+    {
     
     PFUser *user = [self.friends objectAtIndex:indexPath.row];
     
@@ -136,6 +297,43 @@
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
     
         [self.recepients addObject:user.objectId];
+        
+        
+    }
+    }
+    
+    if([self.type isEqualToString:@"Groups"])
+    {
+        
+       
+        
+        if(indexPath.section == 0)
+        {
+            
+            self.chatRoomType = @"Private" ;
+            PFObject *user = [self.privateCRooms objectAtIndex:indexPath.row];
+           self.chatRoomName=user.objectId;
+            NSLog(@"First try it is %@",self.chatRoomName);
+           // [self send:self];
+            
+            
+            
+            
+        }
+        
+        else if(indexPath.section ==1)
+        {
+            
+            self.chatRoomType=@"Global";
+            
+            PFObject *room = [self.globalRooms objectAtIndex:indexPath.row];
+            
+            self.chatRoomName=[room objectForKey:@"GroupName"];
+            //[self send:self];
+            
+            
+        }
+        
         
         
     }
@@ -190,17 +388,33 @@
 }
 */
 
-/*
+
 #pragma mark - Navigation
 
 // In a story board-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    
+    ANmessagePickerController *destination = (ANmessagePickerController*)[segue destinationViewController];
+    
+    destination.delegate = self;
+     
+     
+    
+    
+   
+    
 }
 
- */
+-(void)userHasDecided:(NSString*) type
+{
+    self.type = type;
+    
+  
+    
+}
+
+
 
 
 #pragma mark - ImpagePickerController
@@ -239,13 +453,36 @@
         }
     }
     
-    [self dismissViewControllerAnimated:YES completion:nil];
+    
+    
+    
+    [self dismissViewControllerAnimated:NO completion:nil];
+    
+    
+    
+    
+    [self performSegueWithIdentifier:@"showOption" sender:self.navigationController];
+    
+    
+
+    
+    
+    
+   
+    
 }
+
+
+
+
+
 
 
 #pragma mark Helper Methods
 
 - (IBAction)send:(id)sender {
+    
+    NSLog(@"Lets see what is %@",self.type);
     
     if(self.image == nil && [self.videoFilePath length]==0)
     //some problem with image sending
@@ -310,16 +547,48 @@
             
             else
             {
+                PFObject *message = [PFObject alloc];
                 
-                PFObject *message = [PFObject objectWithClassName:@"messages"];
-                message[@"fileName"] = fileName;
-                message[@"file"] = dataFile;
-                message[@"fileType"]= fileType;
-                message[@"recepientIds"] = self.recepients;
-                message[@"senderId"] = [[PFUser currentUser] objectId];
-                message[@"senderUserName"] = [[PFUser currentUser] username];
+              
                 
-                [message saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                
+                
+               
+                if([self.type isEqualToString:@"Groups"] && [self.chatRoomType isEqualToString:@"Global"])
+                {
+                    message = [PFObject objectWithClassName:self.chatRoomName];
+                    message[@"fileName"] = fileName;
+                    message[@"file"] = dataFile;
+                    message[@"fileType"]= fileType;
+                    message[@"recepientIds"] = self.recepients;
+                    message[@"senderId"] = [[PFUser currentUser] objectId];
+                    message[@"senderUserName"] = [[PFUser currentUser] username];
+                    
+                    
+                }
+                
+                else
+                {
+                    PFQuery *query = [PFQuery queryWithClassName:@"PrivateChatRooms"];
+                    
+                    PFObject *room = [query getObjectWithId:self.chatRoomName];
+                    
+                    message = [PFObject objectWithClassName:@"messages"];
+                    message[@"fileName"] = fileName;
+                    message[@"file"] = dataFile;
+                    message[@"fileType"]= fileType;
+                    message[@"recepientIds"] = [room objectForKey:@"memberGroups"];
+                    message[@"senderId"] = [[PFUser currentUser] objectId];
+                    message[@"senderUserName"] = [[PFUser currentUser] username];
+                    
+                }
+                 
+                
+                
+                
+                
+                [message saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
+                 {
                     if(error)
                        
                     {
@@ -333,6 +602,30 @@
                         else
                         {
                             //TODO everything is succesful
+                            
+                            
+                            PFQuery *query = [PFQuery queryWithClassName:@"PrivateChatRooms"];
+                            
+                            PFObject *room = [query getObjectWithId:self.chatRoomName];
+
+                          
+                            
+                            NSArray * listOfMessages = [room objectForKey:@"listOfMessages"];
+                           
+                            
+                            if(listOfMessages == NULL)
+                                listOfMessages = [NSArray arrayWithObject:message.objectId];
+                            else
+                            
+                            [listOfMessages arrayByAddingObject:message.objectId];
+                            
+                          
+                            
+                            room[@"listOfMessages"] = listOfMessages;
+                            
+                            
+                            [room saveEventually];
+                            
                              [self reset];
                             
                         }
@@ -340,6 +633,8 @@
                     
                     
                 }];
+                
+                
                 
             }
     }];

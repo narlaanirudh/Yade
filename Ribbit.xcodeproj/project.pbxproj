@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		E982F0BB1835729100B99004 /* ANAddFriendsInChatRoomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E982F0BA1835729100B99004 /* ANAddFriendsInChatRoomViewController.m */; };
+		E982F0BE18369A8600B99004 /* ANmessagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = E982F0BD18369A8600B99004 /* ANmessagePickerController.m */; };
 		E9AD0FA418350A1C0032471C /* ToDo.strings in Resources */ = {isa = PBXBuildFile; fileRef = E9AD0FA318350A1C0032471C /* ToDo.strings */; };
 		E9AD0FA718351B510032471C /* ANImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AD0FA618351B510032471C /* ANImageViewController.m */; };
 		E9AD0FA9183529D70032471C /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9AD0FA8183529D70032471C /* MediaPlayer.framework */; };
@@ -68,6 +69,8 @@
 /* Begin PBXFileReference section */
 		E982F0B91835729100B99004 /* ANAddFriendsInChatRoomViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANAddFriendsInChatRoomViewController.h; sourceTree = "<group>"; };
 		E982F0BA1835729100B99004 /* ANAddFriendsInChatRoomViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANAddFriendsInChatRoomViewController.m; sourceTree = "<group>"; };
+		E982F0BC18369A8600B99004 /* ANmessagePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ANmessagePickerController.h; path = ../ANmessagePickerController.h; sourceTree = "<group>"; };
+		E982F0BD18369A8600B99004 /* ANmessagePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ANmessagePickerController.m; path = ../ANmessagePickerController.m; sourceTree = "<group>"; };
 		E9AD0FA318350A1C0032471C /* ToDo.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = ToDo.strings; sourceTree = "<group>"; };
 		E9AD0FA518351B510032471C /* ANImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ANImageViewController.h; path = ../ANImageViewController.h; sourceTree = "<group>"; };
 		E9AD0FA618351B510032471C /* ANImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ANImageViewController.m; path = ../ANImageViewController.m; sourceTree = "<group>"; };
@@ -164,7 +167,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		E9B4C7FD1832395A00782952 = {
+		E982F0BF18369A9000B99004 /* Chatroom */ = {
 			isa = PBXGroup;
 			children = (
 				E982F0B91835729100B99004 /* ANAddFriendsInChatRoomViewController.h */,
@@ -173,6 +176,14 @@
 				E9AD0FB018356E1E0032471C /* ANCreateChatGroupViewController.m */,
 				E9AD0FAC18353F340032471C /* ANChatRoomViewController.h */,
 				E9AD0FAD18353F340032471C /* ANChatRoomViewController.m */,
+			);
+			name = Chatroom;
+			path = ..;
+			sourceTree = "<group>";
+		};
+		E9B4C7FD1832395A00782952 = {
+			isa = PBXGroup;
+			children = (
 				E9AD0FA318350A1C0032471C /* ToDo.strings */,
 				E9B4C84E18323D4800782952 /* Images */,
 				E9B4C80F1832395A00782952 /* Ribbit */,
@@ -217,6 +228,9 @@
 		E9B4C80F1832395A00782952 /* Ribbit */ = {
 			isa = PBXGroup;
 			children = (
+				E982F0BC18369A8600B99004 /* ANmessagePickerController.h */,
+				E982F0BD18369A8600B99004 /* ANmessagePickerController.m */,
+				E982F0BF18369A9000B99004 /* Chatroom */,
 				E9B4C877183404B900782952 /* Inbox */,
 				E9B4C876183404B000782952 /* Camera */,
 				E9B4C8751834049E00782952 /* Friends */,
@@ -425,6 +439,7 @@
 				E9B4C87A183404DA00782952 /* ANCameraViewController.m in Sources */,
 				E9AD0FA718351B510032471C /* ANImageViewController.m in Sources */,
 				E9B4C8161832395A00782952 /* main.m in Sources */,
+				E982F0BE18369A8600B99004 /* ANmessagePickerController.m in Sources */,
 				E9B4C81A1832395A00782952 /* ANAppDelegate.m in Sources */,
 				E9AD0FB118356E1E0032471C /* ANCreateChatGroupViewController.m in Sources */,
 				E9B4C86B18328CE000782952 /* ANLoginController.m in Sources */,
