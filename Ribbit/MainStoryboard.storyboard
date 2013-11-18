@@ -337,11 +337,11 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="jPo-l8-7DW">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="jPo-l8-7DW">
                                 <rect key="frame" x="0.0" y="86" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="jPo-l8-7DW" id="yK5-Bv-aXI">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                             </tableViewCell>
@@ -357,17 +357,80 @@
                         <barButtonItem id="MMj-GK-Hh3"/>
                     </toolbarItems>
                     <navigationItem key="navigationItem" id="8r8-j6-5OI">
-                        <barButtonItem key="rightBarButtonItem" title="+" id="ai6-aN-ekh">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="ai6-aN-ekh">
                             <connections>
                                 <segue destination="VDd-aR-VMe" kind="push" id="K2a-FJ-h7i"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <segue destination="Rcv-1d-Cbs" kind="push" identifier="showChatRooms" id="528-sB-pQk"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="v6Q-uQ-j6U" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1738" y="2815"/>
+        </scene>
+        <!--Chat Room Inbox Controller-->
+        <scene sceneID="Cks-fT-z5F">
+            <objects>
+                <tableViewController id="Rcv-1d-Cbs" customClass="ANChatRoomInboxController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="gJu-RZ-ohM">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="XlK-ZH-X6d">
+                                <rect key="frame" x="0.0" y="86" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="XlK-ZH-X6d" id="Xce-Kf-HVJ">
+                                    <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="Rcv-1d-Cbs" id="urj-X2-scz"/>
+                            <outlet property="delegate" destination="Rcv-1d-Cbs" id="ya8-Yd-S9W"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="2Ls-ye-4Pm"/>
+                    <connections>
+                        <segue destination="UuS-wy-fE0" kind="push" identifier="showImage" id="pt8-Jh-5Z4"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Fo8-IV-Qhn" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1708" y="3488"/>
+        </scene>
+        <!--Chat Image View-->
+        <scene sceneID="Gg4-IV-z4C">
+            <objects>
+                <viewController id="UuS-wy-fE0" customClass="ANChatImageView" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="RYU-1M-3eD"/>
+                        <viewControllerLayoutGuide type="bottom" id="jHi-zg-UdR"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="bfy-a9-5x6">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9ak-Nv-UiD">
+                                <rect key="frame" x="0.0" y="-15" width="320" height="568"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="fPK-ro-uDy"/>
+                    <connections>
+                        <outlet property="imageView" destination="9ak-Nv-UiD" id="gps-Kh-W1q"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="FwZ-HZ-AlX" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2186" y="3488"/>
         </scene>
         <!--Create Chat Group View Controller-->
         <scene sceneID="WGw-BK-j1k">

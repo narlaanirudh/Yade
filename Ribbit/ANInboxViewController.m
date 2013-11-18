@@ -90,7 +90,7 @@
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc ] init];
     
-   // [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+  
    
     
     [dateFormatter setDateFormat:@"EEE-dd-MMM"];
@@ -99,11 +99,11 @@
     
   
     
-   // NSLog(@" %@", []);
+ 
     
     cell.detailTextLabel.text =  [dateFormatter stringFromDate:tmpDate];
     
-    NSLog(@"Date %@", [dateFormatter stringFromDate:tmpDate]);
+
     
     // Configure the cell...
     

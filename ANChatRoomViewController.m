@@ -75,7 +75,7 @@
         else
         {
             self.privateCRooms = objects;
-            NSLog(@" Value of pchatrooms%@",objects);
+           
             [self.tableView reloadData];
             
         }
@@ -162,6 +162,37 @@
     return cell;
 }
 
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+   
+     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    if(indexPath.section ==0)
+    {
+    
+        self.chatRoomName = [[self.privateCRooms objectAtIndex:indexPath.row] objectId];
+        self.chatRoomType = @"Private";
+        
+    }
+    
+    else if(indexPath.section==1)
+    {
+        self.chatRoomName = [[self.globalRooms objectAtIndex:indexPath.row] objectForKey:@"GroupName"];
+        self.chatRoomType = @"Global";
+        
+    }
+    
+   
+    [self performSegueWithIdentifier:@"showChatRooms" sender:self];
+    
+    
+    
+   
+    
+}
+
+
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
@@ -201,16 +232,30 @@
 }
 */
 
-/*
+
 #pragma mark - Navigation
 
 // In a story board-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+
+
 {
+    if([segue.identifier isEqualToString:@"showChatRooms"])
+    {
+        ANChatRoomInboxController *inbox = (ANChatRoomInboxController*)segue.destinationViewController;
+        
+        inbox.chatRoomName = self.chatRoomName;
+        inbox.chatRoomType = self.chatRoomType;
+        
+        
+        
+    }
+    
+    
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
 }
 
- */
+
 
 @end
