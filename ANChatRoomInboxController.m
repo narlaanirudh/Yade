@@ -36,7 +36,7 @@
         
         NSArray *messages = [room objectForKey:@"listOfMessages"];
         
-       // NSLog(@"messages %@",messages);
+     
     
     query = [PFQuery queryWithClassName:@"messages"];
         [query whereKey:@"objectId" containedIn:messages];
@@ -150,8 +150,8 @@
     
     if([fileType isEqualToString:@"image"])
     {
-        [self performSegueWithIdentifier:@"showImage" sender:self];
-        // NSLog(@"I am inside imageView");
+       
+        
     }
     
     else

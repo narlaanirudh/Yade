@@ -501,6 +501,7 @@ switch (section) {
     {
         //self.image = [self resizeImage:self.image towidth:640 toHeight:1136];
         [self uploadMessage];
+         [self.tabBarController setSelectedIndex:0];
        
         
     }
@@ -577,6 +578,10 @@ switch (section) {
                     message[@"fileName"] = fileName;
                     message[@"file"] = dataFile;
                     message[@"fileType"]= fileType;
+                    if([self.type isEqualToString:@"Friends"])
+                        message[@"recepientIds"] = self.recepients;
+                    else
+                        
                     message[@"recepientIds"] = [room objectForKey:@"memberGroups"];
                     message[@"senderId"] = [[PFUser currentUser] objectId];
                     message[@"senderUserName"] = [[PFUser currentUser] username];
@@ -610,21 +615,21 @@ switch (section) {
 
                           
                             
-                            NSArray * listOfMessages = [room objectForKey:@"listOfMessages"];
+                            NSMutableArray * listOfMessages = [room objectForKey:@"listOfMessages"];
                            
                             
                             if(listOfMessages == NULL)
-                                listOfMessages = [NSArray arrayWithObject:message.objectId];
+                                listOfMessages = [NSMutableArray arrayWithObject:message.objectId];
                             else
                             
-                            [listOfMessages arrayByAddingObject:message.objectId];
+                            [listOfMessages addObject:message.objectId];
                             
                           
                             
                             room[@"listOfMessages"] = listOfMessages;
                             
                             
-                            [room saveEventually];
+                            [room saveInBackground];
                             
                              [self reset];
                             
@@ -686,6 +691,6 @@ switch (section) {
     
     [self.recepients removeAllObjects];
     
-    [self.tabBarController setSelectedIndex:0];
+   
 }
 @end
