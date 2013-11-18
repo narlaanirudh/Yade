@@ -8,6 +8,7 @@
 
 #import "ANLoginController.h"
 #import <Parse/Parse.h>
+#import "RNBlurModalView.h"
 
 @interface ANLoginController ()
 
@@ -40,10 +41,12 @@
     
     if(username.length == 0 || password.length == 0)
     {
-        UIAlertView *allertView = [[UIAlertView alloc] initWithTitle:@"Oops!!" message:@"Please enter a valid username/password" delegate:Nil cancelButtonTitle:@"OK" otherButtonTitles:nil , nil ];
         
-        [allertView show];
+        RNBlurModalView *modal = [[RNBlurModalView alloc] initWithViewController:self title:@"Oops!!" message:@"Please enter a valid username/password"];
+        [modal show];
+       
         
+     
     }
     
     

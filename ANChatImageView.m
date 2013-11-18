@@ -7,6 +7,7 @@
 //
 
 #import "ANChatImageView.h"
+#import "MBProgressHUD.h"
 
 @interface ANChatImageView ()
 
@@ -30,17 +31,26 @@
     [super viewWillAppear:animated];
     
     // Do any additional setup after loading the view.
-    PFFile *imgFile = [self.message objectForKey:@"file"];
+  
     
-    NSURL *imageURL = [[NSURL alloc]initWithString:imgFile.url];
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+         PFFile *imgFile = [self.message objectForKey:@"file"];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            NSURL *imageURL = [[NSURL alloc]initWithString:imgFile.url];
+            
+            NSData *imgData = [[NSData alloc] initWithContentsOfURL:imageURL];
+            
+            UIImage *image = [[UIImage alloc]initWithData:imgData];
+            
+            self.imageView.image = image;
+            
+            self.navigationItem.title = [NSString stringWithFormat:@"Sent from %@",[self.message objectForKey:@"senderUserName"]];
+        });
+    });
     
-    NSData *imgData = [[NSData alloc] initWithContentsOfURL:imageURL];
     
-    UIImage *image = [[UIImage alloc]initWithData:imgData];
-    
-    self.imageView.image = image;
-    
-    self.navigationItem.title = [NSString stringWithFormat:@"Sent from %@",[self.message objectForKey:@"senderUserName"]];
 }
 
 -(void) viewDidAppear:(BOOL)animated
