@@ -10,6 +10,7 @@
 #import "ANInvFriendsController.h"
 
 
+
 @interface ANFriendsViewController ()
 
 @end
@@ -21,6 +22,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.shareType = [[NSString alloc]init];
     
 }
 
@@ -210,11 +212,116 @@
         invfrndcntrllr.friends = self.friends;
         
     }
+    
+    else{
+    
+    ANContactsSelectorController *destination = (ANContactsSelectorController*)[segue destinationViewController];
+    
+    destination.delegate = self;
+    }
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
 }
 
 #pragma mark - Helper method
+
+- (IBAction)InviteFriends:(id)sender {
+    
+   /*
+    NSString* someText = @"Lets try this";
+    NSArray* dataToShare = @[someText];
+    
+    UIActivityViewController* activityViewController =
+    [[UIActivityViewController alloc] initWithActivityItems:dataToShare
+                                      applicationActivities:nil];
+    [self presentViewController:activityViewController animated:YES completion:^{}];
+    
+    */
+   
+    
+    
+    UIActionSheet *actionSheet = [[UIActionSheet alloc]initWithTitle:@"How do you want to Invite Friends" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"via WhatsApp",@"via SMS",@"via email", nil];
+        
+        actionSheet.actionSheetStyle = UIActionSheetStyleDefault;
+        
+        [actionSheet showInView:self.view];
+    
+        
+}
+
+    // To handle ActionSheet
+    
+    
+    - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+    {
+        switch (buttonIndex)
+        {
+            case 0:
+            {
+                ABPeoplePickerNavigationController *picker = [[ABPeoplePickerNavigationController alloc] init];
+                picker.peoplePickerDelegate = self;
+                
+                picker.modalPresentationStyle = UIModalPresentationFormSheet;
+                
+                [self presentModalViewController:picker animated:YES];
+            }
+               
+                
+                break;
+                
+            case 1:
+            {
+                self.shareType = @"SMS";
+                [self performSegueWithIdentifier:@"invFriends" sender:self];
+              
+            }
+                
+                
+                
+                break;
+                
+            case 2:
+            {
+                self.shareType = @"email";
+                [self performSegueWithIdentifier:@"invFriends" sender:self];
+                
+            }
+                
+                break;
+                
+                
+                
+        }
+    }
+    
+
+    
+
+
+   
+
+
+- (void)selectedContacts:(NSArray *)contacts noOfcontacts:(int)nofcontacts contactType:(int)type
+{
+  
+    if ([self.shareType isEqualToString:@"SMS"]) {
+        [self sendSMS:contacts];
+    }
+    else
+    
+    [self sendMail:contacts];
+}
+
+
+
+
+
+- (void)peoplePickerNavigationControllerDidCancel:
+(ABPeoplePickerNavigationController *)peoplePicker {
+    [self dismissModalViewControllerAnimated:YES];
+}
+
+
 
 -(BOOL) isFriend:(PFUser *)user {
     
@@ -227,5 +334,158 @@
     return NO;
     
 }
+
+- (BOOL)peoplePickerNavigationController:
+(ABPeoplePickerNavigationController *)peoplePicker
+      shouldContinueAfterSelectingPerson:(ABRecordRef)person {
+    
+   // [self displayPerson:person];
+    ABRecordID   *QR_whatsappABID  = (ABRecordID)ABRecordGetRecordID(person);
+    //NSString* name = ABRecordGetRecordID(person);
+    
+    NSString *outmessage = @"Please download Yaade from bit.lyyaade";
+    
+    
+    NSString *whatsAppString = [NSString stringWithFormat:@"whatsapp://send?abid=%d&text=HelloWorld!;",QR_whatsappABID];
+    
+   
+    
+    NSURL *whatsappURL = [NSURL URLWithString:whatsAppString];
+    
+    if ([[UIApplication sharedApplication] canOpenURL: whatsappURL]) {
+    
+        [[UIApplication sharedApplication] openURL: whatsappURL];
+    }
+    
+    [self dismissModalViewControllerAnimated:YES];
+    return NO;
+    
+    
+    
+}
+
+- (BOOL)peoplePickerNavigationController:
+(ABPeoplePickerNavigationController *)peoplePicker
+      shouldContinueAfterSelectingPerson:(ABRecordRef)person
+                                property:(ABPropertyID)property
+                              identifier:(ABMultiValueIdentifier)identifier
+{
+    return NO;
+}
+
+
+-(void)sendSMS:(NSArray*)recepientIds
+{
+    NSMutableArray *numbers = [[NSMutableArray alloc]init];
+    
+    NSUInteger max = [recepientIds count];
+  
+    
+    for( int i=0; i<max;i++ )
+    {
+        NSString* phone = nil;
+        ABMultiValueRef phoneNumbers = ABRecordCopyValue((__bridge ABRecordRef)(recepientIds[i]),
+                                                         kABPersonPhoneProperty);
+        if (ABMultiValueGetCount(phoneNumbers) > 0)
+            for(int j=0;j<ABMultiValueGetCount(phoneNumbers);j++)
+            {
+               
+                      ABMultiValueCopyValueAtIndex(phoneNumbers, j);
+                [numbers addObject:(__bridge_transfer NSString*)
+                 ABMultiValueCopyValueAtIndex(phoneNumbers, 0)];
+            }
+        
+        
+    }
+
+    
+    
+    MFMessageComposeViewController *controller = [[MFMessageComposeViewController alloc] init];
+	if([MFMessageComposeViewController canSendText])
+	{
+		controller.body = @"Hello from Mugunth";
+		controller.recipients = numbers;
+		controller.messageComposeDelegate = self;
+		[self presentModalViewController:controller animated:YES];
+	}
+     
+    
+  
+    
+}
+
+-(void)sendMail:(NSArray*)recepientIds
+{
+    NSMutableArray *emails = [[NSMutableArray alloc]init];
+    
+    NSUInteger max = [recepientIds count];
+    
+    for( int i=0; i<max;i++ )
+    {
+       
+        ABMultiValueRef phoneNumbers = ABRecordCopyValue((__bridge ABRecordRef)(recepientIds[i]),
+                                                         kABPersonEmailProperty);
+        if (ABMultiValueGetCount(phoneNumbers) > 0)
+            [emails addObject:(__bridge_transfer NSString*)
+             ABMultiValueCopyValueAtIndex(phoneNumbers, 0)];
+        
+    }
+
+    
+    
+    
+    
+    MFMailComposeViewController *controller = [[MFMailComposeViewController alloc] init];
+    
+    [controller setSubject:@"Get Yaade"];
+    [controller setToRecipients:emails];
+    [controller setMessageBody:@"Download Yaade" isHTML:NO];
+    controller.mailComposeDelegate = self;
+    [self presentModalViewController:controller animated:YES];
+    
+}
+
+
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result
+{
+	switch (result) {
+		case MessageComposeResultCancelled:
+			NSLog(@"Cancelled");
+			break;
+		case MessageComposeResultFailed:
+			
+			
+			break;
+		case MessageComposeResultSent:
+            
+			break;
+		default:
+			break;
+	}
+    
+	[self dismissModalViewControllerAnimated:YES];
+}
+
+- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error
+{
+    switch (result) {
+		case MessageComposeResultCancelled:
+			NSLog(@"Cancelled");
+			break;
+		case MessageComposeResultFailed:
+			
+			
+			break;
+		case MessageComposeResultSent:
+            
+			break;
+		default:
+			break;
+    }
+    [self dismissModalViewControllerAnimated:YES];
+    
+}
+
+
 
 @end

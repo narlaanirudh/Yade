@@ -30,11 +30,7 @@
    
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
+
 
 #pragma mark - Table view data source
 
@@ -149,6 +145,12 @@
     
     return NO;
     
+}
+
+- (void)sendSMS:(NSString *)bodyOfMessage recipientList:(NSArray *)recipients
+{
+   
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"sms:"]];
 }
 
 

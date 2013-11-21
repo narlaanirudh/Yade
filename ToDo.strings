@@ -7,10 +7,12 @@
 */
 
 
+//Querrying fb about the current user needs to be on a separate thrad or delayed. Have a look.
+
 //Need to implement video compression
 //Adding of facebook friends + view cell will be customed to include picture of user
 //Contact book, need to rethink through it
 //Dont save the photo which will be sent out
 //customiing of camera app
-//trying to hook upto github
+
 //trying to add doodling
