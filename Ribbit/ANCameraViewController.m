@@ -7,7 +7,7 @@
 //
 
 #import "ANCameraViewController.h"
-#import <MobileCoreServices/UTCoreTypes.h>
+
 
 @interface ANCameraViewController ()
 
@@ -24,43 +24,27 @@
     //Initialize Strings
     
     self.chatRoomName = [[NSString alloc]init];
-    
     self.chatRoomType = [[NSString alloc]init];
-    
-    
-    
     self.recepients = [[NSMutableArray alloc] init];
     self.type = [[NSString alloc]init];
     
+    
+    
     //Load up Global Rooms
-    
-    
     PFQuery *query = [PFQuery queryWithClassName:@"GlobalChatRooms"];
     [query whereKey:@"GroupParent" equalTo:@"Africa"];
     //[query orderByDescending:@"createdAt"];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (!error) {
-            
-            
-            
+          
             self.globalRooms =objects;
             [self.tableView reloadData];
-            
-            
             
         } else {
             // Log details of the failure
             NSLog(@"Error: %@ %@", error, [error userInfo]);
         }
     }];
-    
-    
-    
-
-    
-    
-
-   
     
     
     
@@ -71,26 +55,9 @@
     
     [super viewWillAppear:animated];
     
-    if(self.image == nil && [self.videoFilePath length]==0)
-    {
+    if(self.image ==nil && [self.videoFilePath length]==0)
     
-    self.imagePicker = [[UIImagePickerController alloc] init];
-    self.imagePicker.delegate = self;
-    self.imagePicker.editing = NO;
-    self.imagePicker.videoMaximumDuration = 7.0;
-    
-    if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
-    {
-        self.imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-    }
-    
-    else
-        self.imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    
-    self.imagePicker.mediaTypes = [UIImagePickerController availableMediaTypesForSourceType:self.                       imagePicker.sourceType];
-    
-    [self presentViewController:self.imagePicker animated:NO completion:Nil];
-    }
+    [self performSegueWithIdentifier:@"showCamera" sender:self];
     
     // Load up the Friends
     self.friendsRelation = [[PFUser currentUser] objectForKey:@"friendsRelation"];
@@ -395,7 +362,7 @@ switch (section) {
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     
-    ANmessagePickerController *destination = (ANmessagePickerController*)[segue destinationViewController];
+    ANMediaViewController*destination = (ANMediaViewController*)[segue destinationViewController];
     
     destination.delegate = self;
      
@@ -415,64 +382,14 @@ switch (section) {
 }
 
 
+#pragma mark Delegate Methods
 
-
-#pragma mark - ImpagePickerController
-
--(void) imagePickerControllerDidCancel:(UIImagePickerController *)picker
+- (void)userHasDecided:(UIImage*)img orVideo:(NSString*)videoFilePath withType:(NSString*)type
 {
-    
-    
-   [self dismissViewControllerAnimated:NO completion:nil];
-    
-    [picker dismissViewControllerAnimated:NO completion:nil];
-    [self.tabBarController setSelectedIndex:0];
+    self.image=img;
+    self.videoFilePath=videoFilePath;
+    self.type=type;
 }
-
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    
-    
-    NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
-    
-    if ([mediaType isEqualToString:(NSString *)kUTTypeImage]) {
-        // A photo was taken/selected!
-        self.image = [info objectForKey:UIImagePickerControllerOriginalImage];
-        if (self.imagePicker.sourceType == UIImagePickerControllerSourceTypeCamera) {
-            // Save the image!
-            UIImageWriteToSavedPhotosAlbum(self.image, nil, nil, nil);
-        }
-    }
-    else {
-        // A video was taken/selected!
-        self.videoFilePath = (__bridge NSString *)([[info objectForKey:UIImagePickerControllerMediaURL] path]);
-        if (self.imagePicker.sourceType == UIImagePickerControllerSourceTypeCamera) {
-            // Save the video!
-            if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(self.videoFilePath)) {
-                UISaveVideoAtPathToSavedPhotosAlbum(self.videoFilePath, nil, nil, nil);
-            }
-        }
-    }
-    
-    
-    
-    
-    [self dismissViewControllerAnimated:NO completion:nil];
-    
-    
-    
-    
-    [self performSegueWithIdentifier:@"showOption" sender:self.navigationController];
-    
-    
-
-    
-    
-    
-   
-    
-}
-
-
 
 
 
@@ -492,7 +409,11 @@ switch (section) {
         
         [alertView show];
         
-        [self presentViewController:self.imagePicker animated:NO completion:nil];
+        //TODO show seque
+        
+        [self performSegueWithIdentifier:@"showCamera" sender:self];
+        
+        
     }
     
     else
@@ -647,13 +568,6 @@ switch (section) {
 
 }
 
-- (IBAction)cancel:(id)sender {
-    
-    [self reset];
-    
-    
-}
-
 -(UIImage*) resizeImage:(UIImage*) image towidth:(float) width toHeight:(float) height
 {
     float actualHeight = image.size.height;
@@ -683,6 +597,17 @@ switch (section) {
     
     
 }
+
+- (IBAction)cancel:(id)sender {
+    
+    [self reset];
+    [self.tabBarController setSelectedIndex:0];
+    
+    
+    
+}
+
+
 
 -(void)reset
 {

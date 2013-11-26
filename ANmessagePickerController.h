@@ -13,6 +13,7 @@
 - (void)userHasDecided:(NSString *)dType;
 @end
 
+
 @interface ANmessagePickerController : UIViewController
 @property (copy,nonatomic) NSString *type;
 - (IBAction)friends:(id)sender;
@@ -20,5 +21,7 @@
 
 
 @property id<SettingsDelegate>delegate;
+
+
 
 @end

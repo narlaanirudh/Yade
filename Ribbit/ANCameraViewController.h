@@ -8,16 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
-#import "ANmessagePickerController.h"
+#import "ANMediaViewController.h"
 
-@interface ANCameraViewController : UITableViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface ANCameraViewController : UITableViewController <mediaDelegate>
 
-@property (nonatomic,strong) UIImagePickerController *imagePicker;
+
 
 //@property (nonatomic,strong) ANmessagePickerController *typeChooser;
-@property (nonatomic,strong) UIImage *image;
 
-@property(nonatomic,strong) NSString *videoFilePath;
 
 
 @property (nonatomic,strong) NSArray *friends;
@@ -37,9 +35,13 @@
 @property(nonatomic,strong) NSString *chatRoomName;
 
 
+@property (nonatomic,strong) UIImage *image;
 
 
--(UIImage*) resizeImage:(UIImage*) image towidth:(float) width toHeight:(float) height;
+@property(nonatomic,strong) NSString *videoFilePath;
+
+
+
 
 -(void)reset;
 
@@ -49,8 +51,10 @@
 
 - (IBAction)cancel:(id)sender;
 
--(void) chooseType;
 
 
+
+
+-(UIImage*) resizeImage:(UIImage*) image towidth:(float) width toHeight:(float) height;
 
 @end
